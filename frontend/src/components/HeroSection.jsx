@@ -11,11 +11,17 @@ const features = [
 ];
 
 export default function HeroSection() {
+  const scrollToServices = () => {
+    const el = document.getElementById('services');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4">
       {/* Background gradient mesh */}
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-indigo-600 via-indigo-700 to-slate-900" />
-      <div className="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
       
       {/* Floating decorative blobs */}
       <div className="absolute -top-20 -left-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] animate-blob" />
@@ -42,7 +48,7 @@ export default function HeroSection() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-emerald-300 to-blue-300">
               Verified saath.
             </span>
-          </h1>
+          </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -59,7 +65,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="btn-primary w-full sm:w-auto px-8 py-4 text-lg"
-              onClick={() => { window.scrollTo({ top: document.getElementById('services')?.offsetTop || 0, behavior: 'smooth' }); }}
+              onClick={scrollToServices}
             >
               Explore Services
             </motion.button>
