@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, ShieldCheck, Clock, User as UserIcon } from 'lucide-react';
-import CustomCursor from '@/components/ui/CustomCursor';
 
 const features = [
   { icon: <ShieldCheck className="w-5 h-5" />, title: 'Verified Providers', desc: 'Police & ID verified for your safety' },
@@ -12,23 +11,26 @@ const features = [
 
 export default function HeroSection() {
   const scrollToServices = () => {
-    const el = document.getElementById('services');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    if (typeof document !== 'undefined') {
+      const el = document.getElementById('services');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
   return (
-    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4">
-      {/* Background gradient mesh */}
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4">
+      {/* Background gradient */}
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-indigo-600 via-indigo-700 to-slate-900" />
-      
+
       {/* Floating decorative blobs */}
       <div className="absolute -top-20 -left-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] animate-blob" />
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] animate-blob" />
       <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px]" />
 
       <div className="relative z-10 max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center py-20">
+        {/* Left: Content */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,7 +77,7 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* 3D Visual Card */}
+        {/* Right: 3D Visual Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -137,8 +139,6 @@ export default function HeroSection() {
           ))}
         </div>
       </div>
-
-      <CustomCursor />
-    </div>
+    </section>
   );
 }
