@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const connectDB = require('./config/db');
 
@@ -31,6 +32,11 @@ app.get('/api/health', (req, res) => {
 // API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
+app.use('/api/provider', require('./routes/providerRoutes'));
+
+// Serve uploaded files (avatars, documents, portfolio images)
+// Example: http://localhost:5000/uploads/avatars/avatar-xyz.jpg
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 404 handler for API routes
 app.use('/api/*', (req, res) => {
@@ -44,6 +50,38 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
   });
 }
+
+// Multer error handler (file too large, wrong type, unexpected field, etc.)
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        message: 'File too large. Max 5 MB per file.',
+        success: false,
+      });
+    }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({
+        message: 'Too many files. Max 10 files per request.',
+        success: false,
+      });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({
+        message: 'Unexpected file field.',
+        success: false,
+      });
+    }
+    return res.status(400).json({ message: err.message, success: false });
+  }
+
+  // Custom errors from fileFilter in upload.js
+  if (err) {
+    return res.status(400).json({ message: err.message, success: false });
+  }
+
+  next(err);
+});
 
 // Global error handler
 app.use((err, req, res, next) => {

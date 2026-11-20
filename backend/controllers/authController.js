@@ -88,3 +88,36 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Update logged-in user profile (avatar, name, phone, email)
+// @route   PATCH /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, email, phone } = req.body;
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+
+    // Multer saves the file to disk and puts metadata on req.file
+    if (req.file) {
+      updateData.avatar = `${req.protocol}://${req.get('host')}/uploads/avatars/${req.file.filename}`;
+    }
+
+    const user = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'Profile updated', user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
